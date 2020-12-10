@@ -1,0 +1,9 @@
+ </div>
+        <nav class="navbar fixed-bottom d-flex justify-content-center">
+            <p class="text-primary">Cl&iacute;nica Smiles, M&eacute;rida C/ Francisco n&#176;11</p>
+
+        </nav>
+
+        <script src="js/jquery-3.4.1.min.js"></script>
+        <script src="js/popper.min.js" ></script>
+        <script src="js/bootstrap.min.js"></script>

@@ -1,0 +1,13 @@
+<body class="container">
+        <div class="jumbotron text-center">
+<div class="row">
+                <div class="col-3">
+                    <img class="img-fluid" src="img/Logo1.png" alt="LogoSmiles">
+                </div>
+                <div class="col-9">
+                    <h2 class="d-flex justify-content-center">Cl&iacute;nica Smiles</h2>
+                    <h5 class="d-flex justify-content-center">Sonrisas</h5>
+                    
+                </div>
+            </div>
+        </div>
