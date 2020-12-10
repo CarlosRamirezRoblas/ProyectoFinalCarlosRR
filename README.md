@@ -1,28 +1,3 @@
-# Created by https://www.gitignore.io/api/maven,java-web,netbeans
-# Edit at https://www.gitignore.io/?templates=maven,java-web,netbeans
+usuario java2019
 
-### Java-Web ###
-## ignoring target file
-target/
-
-### Maven ###
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
-.flattened-pom.xml
-
-### NetBeans ###
-**/nbproject/private/
-**/nbproject/Makefile-*.mk
-**/nbproject/Package-*.bash
-build/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
+contraseña 2019
