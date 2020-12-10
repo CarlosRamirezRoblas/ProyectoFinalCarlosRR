@@ -5,6 +5,7 @@
  */
 package es.albarregas.beans;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,25 +19,25 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "operaciones")
-public class Operacion {
+public class Operacion implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idOperacion;
     
-    @Column(length = 3)
+    @Column(name = "revision")//, length = 3)
     private int revision;
     
-    @Column(length = 3)
+    @Column(name = "ortodoncia")//, length = 3)
     private int ortodoncia; 
     
-    @Column(length = 3)
+    @Column(name = "extraccion")//, length = 3)
     private int extraccion;
     
-    @Column(length = 3)
+    @Column(name = "endodoncia")//, length = 3)
     private int endodoncia;
     
-    @Column(length = 3)
+    @Column(name = "limpieza")//, length = 3)
     private int limpiezaDental;
 
     public Operacion(int idOperacion, int revision, int ortodoncia, int extraccion, int endodoncia, int limpiezaDental) {

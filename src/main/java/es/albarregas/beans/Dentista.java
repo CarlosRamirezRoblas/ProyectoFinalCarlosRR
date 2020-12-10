@@ -29,7 +29,7 @@ public class Dentista extends Usuario implements Serializable{
     @Column(name = "horario", length = 45)
     private String horario;
     
-   @OneToMany(cascade = CascadeType.ALL, mappedBy = "dentista")
+   @OneToMany(cascade = CascadeType.ALL)//, mappedBy = "dentista")
     private List<Paciente> pacientes;
 
     public Dentista(String horario, int idUsuario, String email, String password, String nombre, String apellidos, Date ultimoAcceso, String rol,String dni) {

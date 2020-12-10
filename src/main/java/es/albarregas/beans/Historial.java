@@ -5,6 +5,7 @@
  */
 package es.albarregas.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ import org.hibernate.annotations.Cascade;
  */
 @Entity
 @Table(name = "historiales")
-public class Historial {
+public class Historial implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

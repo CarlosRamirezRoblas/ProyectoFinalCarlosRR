@@ -38,7 +38,7 @@ public class Paciente extends Usuario implements Serializable {
     @Column(length = 150)
     private String tratamiento;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "paciente")
+    @OneToMany(cascade = CascadeType.ALL)//, mappedBy = "paciente")
     private List<Historial> historiales;
 
     @OneToOne(cascade = {CascadeType.ALL})

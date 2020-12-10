@@ -5,6 +5,7 @@
  */
 package es.albarregas.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,7 +25,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "citas")
-public class Cita {
+public class Cita implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
