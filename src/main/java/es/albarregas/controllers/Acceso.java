@@ -5,6 +5,7 @@
  */
 package es.albarregas.controllers;
 
+import es.albarregas.beans.Paciente;
 import es.albarregas.beans.Usuario;
 import es.albarregas.dao.IGenericoDAO;
 import es.albarregas.dao.IUsuarioDAO;
@@ -28,25 +29,28 @@ public class Acceso extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
         String url = null;
         HttpSession session = request.getSession();
         DAOFactory daof = DAOFactory.getDAOFactory();
-        IUsuarioDAO<Usuario> udao = daof.getUsuarioDAO();
-        IGenericoDAO<Usuario> pdao = daof.getGenericDAO();
+        IUsuarioDAO<Usuario> usuarioUsuarioDAO = daof.getUsuarioDAO();
+        IGenericoDAO<Usuario> usuarioGenericDAO = daof.getGenericDAO();
+        IGenericoDAO<Paciente> pacienteGenericDAO = daof.getGenericDAO();
 
+        Paciente paciente = new Paciente();
         /*
         Asi genero el administrador de la aplicacion.
-       
+          
         IGenericoDAO<Administrador> adao = daof.getGenericDAO();
         String digest = DigestUtils.md5Hex("123");
-        Administrador admin = new Administrador("admin@admin.com", "admin", "admin", "admin", "ADMINISTRADOR", "76266549k");
+        Administrador admin = new Administrador("admin@admin.com", digest, "admin", "admin", "ADMINISTRADOR", "76266549k","D");
         adao.insertOrUpdate(admin);
          */
- /*
+        /*
          Preguntamos si es un login o logout.
          */
-        if (request.getParameter("login").equalsIgnoreCase("login")) {
+        if (request.getParameter("login").equalsIgnoreCase("Iniciar Sesion")) {
             /*
         * Comprobamos que haya introducido datos.
         * Encriptamos la contraseña a md5 para compararla con la que estan guardadas a la base de datos.
@@ -59,7 +63,7 @@ public class Acceso extends HttpServlet {
                 user.setPassword(pass.toUpperCase());
                 Boolean primerAcceso = false;
 
-                user = udao.login(user);
+                user = usuarioUsuarioDAO.login(user);
                 /*
             * Comprobamos que el usuario este guardado en la base de datos preguntado si es null.
                  */
@@ -69,7 +73,7 @@ public class Acceso extends HttpServlet {
                 * Redirigimos hacia la siguiente pagina dependiendo de que rol tenga el usuario que ha logueado.
                      */
                     switch (user.getRol()) {
-                        case "ADMIN":
+                        case "ADMINISTRADOR":
                             url = "/jsp/Administrador/menuAd.jsp";
                             break;
                         case "DENTISTA":
@@ -87,15 +91,16 @@ public class Acceso extends HttpServlet {
                                 } else {
                                     Date actual = new Date();
                                     user.setUltimoAcceso(actual);
-                                    pdao.insertOrUpdate(user);
+                                    usuarioGenericDAO.insertOrUpdate(user);
                                     url = "/jsp/Dentista/menuDentista.jsp";
                                 }
                             } else if (primerAcceso) {
                                 url = "jsp/Paciente/cambiarDatosPaciente.jsp";
                             } else {
                                 Date actual = new Date();
-                                user.setUltimoAcceso(actual);
-                                pdao.insertOrUpdate(user);
+                                paciente = pacienteGenericDAO.getById(user.getIdUsuario(), Paciente.class);
+                                paciente.setUltimoAcceso(actual);
+                                pacienteGenericDAO.insertOrUpdate(paciente);
                                 url = "/jsp/Paciente/menuPaciente.jsp";
                             }
                             break;
@@ -135,7 +140,10 @@ public class Acceso extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = "/index.jsp";
+        String acceso = "Introduce tus datos para acceder a la pagina.";
+        request.setAttribute("login", acceso);
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**

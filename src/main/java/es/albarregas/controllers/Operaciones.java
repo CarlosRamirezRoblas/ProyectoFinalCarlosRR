@@ -5,14 +5,21 @@
  */
 package es.albarregas.controllers;
 
-
+import es.albarregas.beans.Cita;
 import es.albarregas.beans.Dentista;
+import es.albarregas.beans.Historial;
+import es.albarregas.beans.Operacion;
 import es.albarregas.beans.Paciente;
 import es.albarregas.dao.IGenericoDAO;
+import es.albarregas.dao.IHistorialDAO;
 import es.albarregas.daofactory.DAOFactory;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -46,6 +53,7 @@ public class Operaciones extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
         String url = null;
         String pass = null;
@@ -53,12 +61,18 @@ public class Operaciones extends HttpServlet {
         String letraCapitalizada = null;
         HttpSession session = request.getSession();
         DAOFactory daof = DAOFactory.getDAOFactory();
-        IGenericoDAO<Dentista> gdao = daof.getGenericDAO();
-        IGenericoDAO<Paciente> pdao = daof.getGenericDAO();
-
+        IGenericoDAO<Dentista> dentistaGenericDAO = daof.getGenericDAO();
+        IGenericoDAO<Paciente> pacienteGenericDAO = daof.getGenericDAO();
+        IHistorialDAO<Historial> historialHistorialDAO = daof.getHistorialDAO();
+        List<Historial> historiales = new ArrayList();
+        IGenericoDAO<Operacion> operacionGenericoDAO = daof.getGenericDAO();
         Date actual = new Date();
         Paciente paciente = new Paciente();
         Dentista dentista = new Dentista();
+        Historial historial = new Historial();
+        Operacion operacion = new Operacion();
+        Cita cita = new Cita();
+
 
         /*
         Empezamos con la parte de administrador
@@ -74,7 +88,7 @@ public class Operaciones extends HttpServlet {
                 dentista.setPassword(digest.toUpperCase());
                 dentista.setEmail(request.getParameter("email"));
                 dentista.setRol("DENTISTA");
-                gdao.insertOrUpdate(dentista);
+                dentistaGenericDAO.insertOrUpdate(dentista);
                 request.setAttribute("mensaje", "Se ha insertado correctamente un nuevo dentista.");
                 url = "/jsp/Administrador/menuAd.jsp";
                 break;
@@ -83,9 +97,9 @@ public class Operaciones extends HttpServlet {
                 Borramos el dentista que el administrador haya seleccionado en el formulario anterior.
                 Mostramos un mensaje y volvemos al menu de administrador.
              */
-            case "Eliminar dentista":
-                dentista.setIdUsuario(Integer.parseInt(request.getParameter("idUsuario")));
-                gdao.delete(dentista);
+            case "Borrar dentista":
+                dentista.setIdUsuario(Integer.parseInt(request.getParameter("confirmar")));
+                dentistaGenericDAO.delete(dentista);
 
                 request.setAttribute("mensaje", "Se ha eliminado correctamente el dentista.");
                 url = "/jsp/Administrador/menuAd.jsp";
@@ -94,33 +108,77 @@ public class Operaciones extends HttpServlet {
                 Obtenemos el dentista seleccionado previamente, lo asignamos a un peticion y
                 avanzamos a la pagina de confirmacion donde mostramos que dentista se eliminara.
              */
-            case "Borrar dentista":
-                dentista = gdao.getById(Integer.parseInt(request.getParameter("dentista")), Dentista.class);
+            case "Eliminar dentista":
+                dentista = dentistaGenericDAO.getById(Integer.parseInt(request.getParameter("dentista")), Dentista.class);
                 request.setAttribute("dentista", dentista);
                 url = "/jsp/Administrador/confirmarEliminarDentista.jsp";
+                break;
+            /*
+                Obtenemos el paciente seleccionado previamente, lo asignamos a un peticion y
+                avanzamos a la pagina de confirmacion donde mostramos que paciente se eliminara.
+             */
+
+            case "Eliminar paciente":
+                paciente = pacienteGenericDAO.getById(Integer.parseInt(request.getParameter("paciente")), Paciente.class);
+                request.setAttribute("paciente", paciente);
+                url = "/jsp/Administrador/confirmarBorrarPaciente.jsp";
+                break;
+            /*
+                Borramos el paciente seleccionado en el formulario anterior.
+                Mostramos un mensaje y volvemos al menu de dentista.
+             */
+            case "Borrar paciente":
+                paciente.setIdUsuario(Integer.parseInt(request.getParameter("confirmar")));
+                historialHistorialDAO.borrarHistorialPaciente(paciente.getIdUsuario());
+                pacienteGenericDAO.delete(paciente);
+                request.setAttribute("mensaje", "Se ha eliminado correctamente el paciente.");
+                url = "/jsp/Administrador/menuAd.jsp";
                 break;
 
             /*
          A partir de aqui opciones de los dentistas.
              */
             /*
-                Obtenemos el paciente seleccionado previamente, lo asignamos a un peticion y
-                avanzamos a la pagina de confirmacion donde mostramos que paciente se eliminara.
+                Asigamos un el paciente previamente seleccionado al dentista que esta
+                en sesion actualemte.
              */
-            case "Borrar paciente":
-                paciente = pdao.getById(Integer.parseInt(request.getParameter("idUsuario")), Paciente.class);
-                request.setAttribute("paciente", paciente);
-                url = "/jsp/Tutor/confirmarEliminarPaciente.jsp";
+            case "Asignar":
+                paciente = pacienteGenericDAO.getById(Integer.parseInt(request.getParameter("paciente")), Paciente.class);
+                dentista = (Dentista) session.getAttribute("userConectado");
+                paciente.setDentista(dentista);
+                pacienteGenericDAO.insertOrUpdate(paciente);
+                request.setAttribute("mensaje", "Asignado paciente " + paciente.getNombre() + " correctamente.");
+                url = "/jsp/Dentista/menuDentista.jsp";
                 break;
             /*
-                Borramos el paciente seleccionado en el formulario anterior.
-                Mostramos un mensaje y volvemos al menu de dentista.
+                Desasignamos el paciente previamente seleccionado al dentista que esta
+                en sesion actualmente.
              */
-            case "Eliminar paciente":
-                paciente.setIdUsuario(Integer.parseInt(request.getParameter("idUsuario")));
-                pdao.delete(paciente);
-                request.setAttribute("mensaje", "Se ha eliminado correctamente el alumno.");
-                url = "/jsp/Tutor/menuTutor.jsp";
+            case "Desasignar":
+                paciente = pacienteGenericDAO.getById(Integer.parseInt(request.getParameter("paciente")), Paciente.class);
+                paciente.setDentista(null);
+                pacienteGenericDAO.insertOrUpdate(paciente);
+                request.setAttribute("mensaje", "Desasignado paciente " + paciente.getNombre() + " correctamente.");
+                url = "/jsp/Dentista/menuDentista.jsp";
+                break;
+            /*
+                Asignamos tratamiento al paciente que el dentista haya seleccionado.
+                Si es el primer tratamiento no hace nada mas. En caso contrario,
+                guarda el tratamiento anterior y su fecha en el historial.
+             */
+            case "Asignar tratamiento":
+                paciente = pacienteGenericDAO.getById(Integer.parseInt(request.getParameter("paciente")), Paciente.class);
+                if (paciente.getTratamiento() != null) {
+                    historial.setFechaHistorial(actual);
+                    historial.setDescripcion(paciente.getTratamiento());
+                    historial.setPaciente(paciente);
+                    historiales.add(historial);
+                    paciente.setHistoriales(historiales);
+                }
+                paciente.setTratamiento(request.getParameter("tratamiento"));
+                pacienteGenericDAO.insertOrUpdate(paciente);
+                request.setAttribute("mensaje", "Tratamiento asignado al paciente " + paciente.getNombre() + " correctamente.");
+                url = "/jsp/Dentista/menuDentista.jsp";
                 break;
             /*
                 Cambiamos los datos de dentista, si es la primera vez que ingresa
@@ -155,11 +213,11 @@ public class Operaciones extends HttpServlet {
                 if (pass == null) {
                     pass = DigestUtils.md5Hex(request.getParameter("password"));
                     dentista.setPassword(pass.toUpperCase());
-                }               
+                }
                 session.removeAttribute("userConectado");
                 session.setAttribute("userConectado", dentista);
 
-                gdao.insertOrUpdate(dentista);
+                dentistaGenericDAO.insertOrUpdate(dentista);
 
                 request.setAttribute("mensaje", "Se han modificado correctamente tus datos.");
                 url = "/jsp/Dentista/menuDentista.jsp";
@@ -205,15 +263,37 @@ public class Operaciones extends HttpServlet {
                     pass = DigestUtils.md5Hex(request.getParameter("password"));
                     paciente.setPassword(pass.toUpperCase());
                 }
-                
+
                 session.removeAttribute("userConectado");
                 session.setAttribute("userConectado", paciente);
 
-                pdao.insertOrUpdate(paciente);
+                pacienteGenericDAO.insertOrUpdate(paciente);
 
                 request.setAttribute("mensaje", "Se han modificado correctamente tus datos.");
                 url = "/jsp/Paciente/menuPaciente.jsp";
 
+                break;
+                /*
+                Obtiene la fecha seleccionada previamente, la asgina al paciente
+                que este en sesion, lo añade a la base de datos y actualiza sesion.
+                */
+            case "Confirmar cita":
+                operacion = operacionGenericoDAO.getById(1, Operacion.class);
+                String fecha = request.getParameter("cita");
+                Date date = null;
+                try {
+                    date = new SimpleDateFormat("yyyy-MM-dd").parse(fecha);
+                } catch (ParseException ex) {
+                    Logger.getLogger(Operaciones.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                cita.setCita(date);
+                cita.setTipoOperacion(operacion);
+                paciente = (Paciente) session.getAttribute("userConectado");
+                paciente.setCita(cita);
+                session.setAttribute("userConectado", paciente);
+                pacienteGenericDAO.insertOrUpdate(paciente);
+
+                url = "/jsp/Paciente/menuPaciente.jsp";
                 break;
 
         }
@@ -234,7 +314,10 @@ public class Operaciones extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String url = "/index.jsp";
+        String acceso = "Introduce tus datos para acceder a la pagina.";
+        request.setAttribute("login", acceso);
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**

@@ -47,6 +47,10 @@
                     <label>Dni</label>
                     <input type="text" class="form-control" pattern="[0-9]{8}[A-Za-z]{1}" title="64521894k" name="dni" id="dni" value="${userConectado.dni}" required/>  
                 </div>
+                <div class="col-6">
+                    <label>Horario</label>
+                   <input type="text" class="form-control" name="horario" value="${userConectado.horario}" required/> 
+                </div>
             </div>
             <div class="p-5">
                 <input type="submit" class="btn btn-primary" id="enviar" name="enviar" value="Cambiar datos"/>

@@ -43,7 +43,7 @@ public class Usuario implements Serializable {
     @Column(name = "ultimoAcceso")
     @Temporal(TemporalType.DATE)
     private Date ultimoAcceso;
-    @Column(name = "rol", length = 6)
+    @Column(name = "rol", length = 15)
     private String rol;
     @Column(name = "dni", length = 60)
     private String dni;

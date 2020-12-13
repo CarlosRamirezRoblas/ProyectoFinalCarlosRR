@@ -28,22 +28,24 @@ import org.hibernate.annotations.Cascade;
 @Entity
 @Table(name = "historiales")
 public class Historial implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idHistorial;
-    
+
     @Column(length = 150)
     private String descripcion;
-    
-    @Column(name = "fechaHistorial")
-    @Temporal(TemporalType.DATE)
-    private Date fechaHistorial;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "paciente", foreignKey = @ForeignKey(name = "FK_historial_paciente"))
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Paciente paciente;
+
+    @Column(name = "fechaHistorial")
+    @Temporal(TemporalType.DATE)
+    private Date fechaHistorial;
+    
+    
 
     public Historial(int idHistorial, String descripcion, Date fechaHistorial, Paciente paciente) {
         this.idHistorial = idHistorial;
@@ -87,7 +89,4 @@ public class Historial implements Serializable {
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
     }
-    
-    
-    
 }

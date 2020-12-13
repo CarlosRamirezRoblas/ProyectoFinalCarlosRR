@@ -5,20 +5,16 @@
  */
 package es.albarregas.dao;
 
-
-import es.albarregas.beans.Paciente;
 import java.util.List;
 
 /**
  *
  * @author Carlos
  */
-public interface IPacienteDAO<Paciente> {
+public interface IHistorialDAO<Historial> {
     
-    public List<Paciente> obtenerPacientesDeUnDentista(int id);
+     public List<Historial> historialDeUnPaciente (int id);
+     
+     public void borrarHistorialPaciente (int id);
     
-    public List<Paciente> pacientesSinDentista();
-    
-    public List<Paciente> pacientesSinDentistaNiDatos();
-   
 }

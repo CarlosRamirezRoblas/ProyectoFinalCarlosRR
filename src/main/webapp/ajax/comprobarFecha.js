@@ -9,22 +9,22 @@ $(document).ready(function () {
     var day = d.getDate();
     var actual = year + "-" + month + "-" + day;
 
-    $('#fecha').attr("max", actual);
+    $('#cita').attr("min", actual);
+    
+    $('#cita').val(actual);
+  
 
-    $("#enviar").click(function () {
-        $("#mensaje").empty();
-        if ($('#fecha').val() !== "") {
-            $("#enviar").removeAttr("disabled");
-        } else {
-            $("#mensaje").append("Introduzca una fecha.");
-            $("#enviar").attr("disabled", "disabled");
+    });
+    $("#cita").blur(function () {
+         $("#mensaje").empty();
+        const picker = document.getElementById('cita');
+            var day = new Date(this.value).getUTCDay();
+            if ([6, 0].includes(day)) {
+                $("#mensaje").append("Fines de semana no disponibles.");
+                this.value = '';
+            }
+        
+    });
+   
 
-        }
-    });
-    $("#fecha").blur(function () {
-        if ($('#fecha').val() !== "") {
-            $("#mensaje").empty();
-            $("#enviar").removeAttr("disabled");
-        }
-    });
-});
+

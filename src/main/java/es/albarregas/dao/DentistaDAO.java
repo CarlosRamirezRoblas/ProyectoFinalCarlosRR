@@ -21,7 +21,7 @@ public class DentistaDAO extends GenericoDAO implements IDentistaDAO<Dentista> {
         List<Dentista> listadoResultados = null;
         try {
             startTransaction();
-            listadoResultados = sesion.createQuery("SELECT t from Dentista as t where t.pacientes < 1").list();
+            listadoResultados = sesion.createQuery("SELECT t from Dentista as t where t.idUsuario not in (select p.dentista from Paciente as p) ").list();
         } catch (HibernateException he) {
             this.handleExcepcion(he);
         } finally {

@@ -31,6 +31,36 @@ public class PacienteDAO extends GenericoDAO implements IPacienteDAO<Paciente> {
         }
         return listadoResultados;
     }
+
+    @Override
+    public List<Paciente> pacientesSinDentistaNiDatos() {
+       List<Paciente> listadoResultados = null;
+        try {
+            startTransaction();
+            Query query = sesion.createQuery("SELECT a from Paciente as a where a.dentista.idUsuario is null and a.ultimoAcceso is not  null ");
+            listadoResultados = query.list();
+        } catch (HibernateException he) {
+            this.handleExcepcion(he);
+        } finally {
+            this.endTransaction();
+        }
+        return listadoResultados;
+    }
+
+    @Override
+    public List<Paciente> pacientesSinDentista() {
+       List<Paciente> listadoResultados = null;
+        try {
+            startTransaction();
+            Query query = sesion.createQuery("SELECT a from Paciente as a where a.dentista.idUsuario is null");
+            listadoResultados = query.list();
+        } catch (HibernateException he) {
+            this.handleExcepcion(he);
+        } finally {
+            this.endTransaction();
+        }
+        return listadoResultados;
+    }
     
 
 }

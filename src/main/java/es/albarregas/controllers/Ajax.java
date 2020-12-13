@@ -78,6 +78,10 @@ public class Ajax extends HttpServlet {
                 response.setContentType("application/json");
                 response.getWriter().print(objeto);
                 break;
+                /*
+                Comprobamos si el dni esta guardado en la base de datos.
+                Devolvemos un mensaje si coincide o null si no hay coincidencias.
+                */
             case "checkDNI":
                 objeto = null;
                 Usuario userActual = (Usuario) session.getAttribute("userConectado");

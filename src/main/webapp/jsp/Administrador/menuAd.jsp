@@ -10,7 +10,7 @@
     </head>
     <jsp:include page="/inc/cabecera"/>  
     <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#"></a>
+         <a class="navbar-brand btn btn-outline-info" href="Inicio">Inicio</a>
         <form class="form" role="form" method="post" action="Acceso">
             <input type="submit" class="btn btn-primary btn-block" name="login" value="Logout"/>
         </form>
@@ -18,25 +18,6 @@
 
     <div class="m-5">
         <form class="form" role="form" method="post" action="Redirecciones">
-            <h3>Menu de administrador</h3>
-            <div class="row">
-                <div class="col-6">
-                    <input type="submit" class="btn btn-outline-info" name="enviar" value="Dar de alta a nuevos dentistas"/>              
-                </div>
-                <div class="col-6">
-                    <input type="submit" class="btn btn-outline-info" name="enviar" value="Eliminar dentistas sin pacientes"/>              
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <input type="submit" class="btn btn-outline-info" name="enviar" value="Listar los dentistas existentes"/>              
-                </div>
-                <div class="col-6">
-                    <input type="submit" class="btn btn-outline-info" name="enviar" value="Listar los dentistas y pacientes"/>              
-                </div>
-            </div>
-        </form>
-        <div class="p-5">
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex justify-content-center">
@@ -44,7 +25,30 @@
                     </div>
                 </div>
             </div>
-        </div>
+            <h3>Menu de administrador</h3>
+            </br>
+            <div class="row">
+                <div class="col-4">
+                    <input type="submit" class="btn btn-outline-info" name="enviar" value="Listar los dentistas existentes"/>     
+                </div>
+                <div class="col-4">
+                    <input type="submit" class="btn btn-outline-info" name="enviar" value="Listar los dentistas y pacientes asignados"/>  
+                </div>
+                 <div class="col-4">
+                    <input type="submit" class="btn btn-outline-info" name="enviar" value="Dar de alta a nuevos dentistas"/>   
+                </div>
+            </div>
+            </br>
+            <div class="row">          
+                <div class="col-6">
+                    <input type="submit" class="btn btn-outline-info" name="enviar" value="Eliminar dentistas sin pacientes"/>                
+                </div>
+                <div class="col-4 offset-2">
+                    <input type="submit" class="btn btn-outline-info" name="enviar" value="Eliminar paciente"/>   
+                </div>
+            </div>
+        </form>
+       
     </div>
 
     <jsp:include page="/inc/pieDePagina"/>

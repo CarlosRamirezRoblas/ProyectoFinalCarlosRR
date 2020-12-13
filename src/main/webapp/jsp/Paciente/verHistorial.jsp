@@ -1,4 +1,5 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:directive.page pageEncoding="UTF-8" contentType="text/html" />
 
 <!DOCTYPE html>
@@ -10,7 +11,7 @@
     </head>
     <jsp:include page="/inc/cabecera"/>  
     <nav class="navbar navbar-light bg-light">
-         <a class="navbar-brand btn btn-outline-info" href="Inicio">Inicio</a>
+        <a class="navbar-brand btn btn-outline-info" href="Inicio">Inicio</a>
         <form class="form" role="form" method="post" action="Acceso">
             <input type="submit" class="btn btn-primary btn-block" name="login" value="Logout"/>
             </div>
@@ -18,9 +19,9 @@
     </nav>
     <div class="p-5">
         <form class="form" role="form" method="post" action="Operaciones">
-            
+
             <h2><b>Historial de ${paciente.nombre}</b></h2>
-           <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Fecha</th>
@@ -28,13 +29,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="item" items="${paciente.historiales}">
+                    <c:forEach var="historial" items="${paciente.historiales}">
                         <tr>
-                            <td><fmt:formatDate type = "date" value = "${item.fechaHistorial}" /></td>
-                            <td><c:out value="${item.descripcion}" default=""/></td>
+                            <td><fmt:formatDate type = "date" value = "${userConectado.ultimoAcceso}" /></td>
+                            <td><c:out value="${historial.descripcion}" default="No hay historial"/></td>
                         </tr>   
                     </c:forEach>
-                        </table>
+            </table>
         </form>
     </div>
     <jsp:include page="/inc/pieDePagina"/>

@@ -17,40 +17,53 @@
                 <div class="alert alert-warning alert-dismissable">
                     <c:out default="Introduce tus datos" value="${mensaje}"></c:out>
                     </div>
-                    <form class="form" role="form" method="post" action="Acceso">
+                    <form class="form" role="form" method="post" action="Registro">
                         <div class="form-group">
                             <input id="emailInput" name="email" placeholder="Email" class="form-control form-control-sm" type="text" required="true">
                         </div>
                         <div class="form-group">
-                            <input id="passwordInput" name="password" placeholder="Password" class="form-control form-control-sm" type="password" required="true">
+                            <input  name="password" placeholder="Contrase&ntilde;a" class="form-control form-control-sm" type="password" required="true">
                         </div>
                         <div class="form-group">
-                            <input type="submit" class="btn btn-primary btn-block" name="login" value="Login"/>
+                            <input type="submit" class="btn btn-primary btn-block" name="registro" value="Registrarse"/>
                         </div>
                     </form>
                 </li>
             </ul>
         </nav>
-
-    <div class="p-3">
         <div class="d-flex justify-content-center">
             <p id="mensaje" class="text-danger">${mensaje}</p>
-        </div>
-        <form enctype="multipart/form-data" class="form" role="form" method="post" action="Operaciones">
-            <div class="form-group">
-                <label>Email del nuevo dentista</label>
-                <input type="email" name="email" id="email" value="" placeholder="dentista@gmail.com" required/>  
-            </div>
-            <div class="form-group">
-                <label>Contrase&ntilde;a del nuevo dentista</label>
-                <input type="password" name="password" value="" placerholder="123" required=""/>  
-            </div>
-            <div class="p-5">
-                <input type="submit" class="btn btn-primary" id="enviar" name="enviar" value="Cambiar datos"/>
-            </div>
-        </form>
     </div>
+    <form class="form" role="form" method="post" action="Registro">
+        <div class="row">
+            <div class="col-11 offset-1">
+                <h4>Introduce tus datos para crear tu cuenta.</h4>
+                </br>
+            </div>
+        </div>
+        <div class="row">
 
+            <div class="col-2 offset-2">
+                <label>Email</label>
+            </div>
+            <div class="col-8">
+                <input type="email" name="email" id="email" value="" placeholder="email@gmail.com" required/>  
+            </div>
+
+        </div>
+        <div class="row">
+
+            <div class="col-2 offset-2">
+                <label>Contrase&ntilde;a</label>
+            </div>
+            <div class="col-8">
+                <input type="password" name="password" value="" placerholder="Contrase&ntilde;a" required/>
+            </div>    
+        </div>
+        </br></br>
+        <input type="submit" id="enviar" class="btn btn-primary" name="registro" value="Registrarse"/>
+    </form>       
     <jsp:include page="/inc/pieDePagina"/>
+    <script type="text/javascript" src="${contexto}/ajax/comprobarEmail.js"></script>
 </body>
 </html>

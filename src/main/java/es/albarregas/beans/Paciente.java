@@ -35,10 +35,10 @@ public class Paciente extends Usuario implements Serializable {
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Dentista dentista;
 
-    @Column(length = 150)
+   @Column(length = 150)
     private String tratamiento;
 
-    @OneToMany(cascade = CascadeType.ALL)//, mappedBy = "paciente")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "paciente")
     private List<Historial> historiales;
 
     @OneToOne(cascade = {CascadeType.ALL})

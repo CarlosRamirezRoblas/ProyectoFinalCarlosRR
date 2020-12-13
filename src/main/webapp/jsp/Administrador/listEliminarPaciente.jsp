@@ -10,7 +10,7 @@
     </head>
     <jsp:include page="/inc/cabecera"/>  
     <nav class="navbar navbar-light bg-light">
-         <a class="navbar-brand btn btn-outline-info" href="Inicio">Inicio</a>
+        <a class="navbar-brand btn btn-outline-info" href="Inicio">Inicio</a>
         <form class="form" role="form" method="post" action="Acceso">
             <input type="submit" class="btn btn-primary btn-block" name="login" value="Logout"/>
             </div>
@@ -18,17 +18,20 @@
     </nav>
     <div class="p-5">
         <form class="form" role="form" method="post" action="Operaciones">
-            <h4>Listado de dentistas</h4>
-             <ul>
-                    <c:forEach var="item" items="${dentistas}">
-                         <c:set var="salida" value="No ha rellenado su informacion personal."/>
+            <label>Seleccione un paciente para borrarlo:</label>
+            <ol>
+                <c:forEach var="item" items="${pacientes}">
+                    <li>-  <input type="radio" name="paciente" value="${item.idUsuario}" checked/>
+                        <c:set var="salida" value="El paciente con correo '${item.email}' no tiene datos."/>
                         <c:if test="${item.nombre != null}">
-                            <c:set var="salida" value="Dentista: ${item.apellidos}, ${item.nombre}"/>
+                            <c:set var="salida" value="${item.apellidos}, ${item.nombre}"/>
                         </c:if>
-                        <li type="disc"><c:out value="${salida}" default="Error."/></li>
+                        <label><c:out value="${salida}" default="Ha ocurrido un error inesperado"/></label>
+                    </li>
+                </c:forEach>
+            </ol>
 
-                    </c:forEach>
-                </ul>
+            <input type="submit" class="btn btn-primary" name="enviar" value="Eliminar paciente"/>
         </form>
     </div>
 

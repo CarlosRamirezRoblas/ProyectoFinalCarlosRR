@@ -19,25 +19,25 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "operaciones")
-public class Operacion implements Serializable {
+public class Operacion implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idOperacion;
     
-    @Column(name = "revision")//, length = 3)
+    @Column(length = 3)
     private int revision;
     
-    @Column(name = "ortodoncia")//, length = 3)
+    @Column(length = 3)
     private int ortodoncia; 
     
-    @Column(name = "extraccion")//, length = 3)
+    @Column(length = 3)
     private int extraccion;
     
-    @Column(name = "endodoncia")//, length = 3)
+    @Column(length = 3)
     private int endodoncia;
     
-    @Column(name = "limpieza")//, length = 3)
+    @Column(length = 3)
     private int limpiezaDental;
 
     public Operacion(int idOperacion, int revision, int ortodoncia, int extraccion, int endodoncia, int limpiezaDental) {
@@ -48,7 +48,15 @@ public class Operacion implements Serializable {
         this.endodoncia = endodoncia;
         this.limpiezaDental = limpiezaDental;
     }
-
+    
+    public Operacion( int revision, int ortodoncia, int extraccion, int endodoncia, int limpiezaDental) {
+        this.revision = revision;
+        this.ortodoncia = ortodoncia;
+        this.extraccion = extraccion;
+        this.endodoncia = endodoncia;
+        this.limpiezaDental = limpiezaDental;
+    }
+    
     public Operacion(){
         
     }

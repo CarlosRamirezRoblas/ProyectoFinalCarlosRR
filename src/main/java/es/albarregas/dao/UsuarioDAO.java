@@ -7,6 +7,7 @@ package es.albarregas.dao;
 
 import es.albarregas.beans.Usuario;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 /**

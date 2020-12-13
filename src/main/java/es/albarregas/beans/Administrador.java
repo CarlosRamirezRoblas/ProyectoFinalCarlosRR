@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "idUsuario", foreignKey = @ForeignKey(name = "FK_administrador_usuarios"))
 public class Administrador extends Usuario implements Serializable {
     
-    @Column(name="modoDios", length=1)//, columnDefinition="CHAR")
+    @Column(name="modoDios", length=1, columnDefinition="CHAR")
     private String modoDios;
 
     public Administrador(String modoDios, int idUsuario, String email, String password, String nombre, String apellidos, Date ultimoAcceso, String rol,String dni) {
@@ -30,7 +30,7 @@ public class Administrador extends Usuario implements Serializable {
         this.modoDios = modoDios;
     }
 
-    public Administrador(String modoDios, String email, String password, String nombre, String apellidos, String rol,String dni) {
+    public Administrador(String email, String password, String nombre, String apellidos, String rol,String dni, String dios) {
         super(email, password, nombre, apellidos,rol,dni);
         this.modoDios = modoDios;
     }

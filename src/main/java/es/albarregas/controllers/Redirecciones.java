@@ -5,10 +5,13 @@
  */
 package es.albarregas.controllers;
 
+import es.albarregas.beans.Cita;
 import es.albarregas.beans.Dentista;
+import es.albarregas.beans.Historial;
 import es.albarregas.beans.Paciente;
 import es.albarregas.dao.IDentistaDAO;
 import es.albarregas.dao.IGenericoDAO;
+import es.albarregas.dao.IHistorialDAO;
 import es.albarregas.dao.IPacienteDAO;
 import es.albarregas.daofactory.DAOFactory;
 import java.io.IOException;
@@ -37,22 +40,25 @@ public class Redirecciones extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String url = null;
         HttpSession session = request.getSession();
         DAOFactory daof = DAOFactory.getDAOFactory();
-        IGenericoDAO<Paciente> adao = daof.getGenericDAO();
-        IGenericoDAO<Dentista> gdao = daof.getGenericDAO();
-        IDentistaDAO<Dentista> ddao = daof.getDentistaDAO();
-        IPacienteDAO<Paciente> pdao = daof.getPacienteDAO();
+        IGenericoDAO<Paciente> pacienteGenericDAO = daof.getGenericDAO();
+        IGenericoDAO<Dentista> dentistaGenericDAO = daof.getGenericDAO();
+        IDentistaDAO<Dentista> dentistaDentistaDAO = daof.getDentistaDAO();
+        IPacienteDAO<Paciente> pacientePacienteDAO = daof.getPacienteDAO();
+        IHistorialDAO<Historial> historialHistorialDAO = daof.getHistorialDAO();
 
         Dentista dentista = new Dentista();
         Paciente paciente = new Paciente();
         List<Dentista> dentistas = new ArrayList();
         List<Paciente> pacientes = new ArrayList();
-
+        List<Paciente> addPacientes = new ArrayList();
+        List<Dentista> dentistasYSusPacientes = new ArrayList();
+        List<Historial> historiales = new ArrayList();
 
         switch (request.getParameter("enviar")) {
             /*
@@ -68,7 +74,7 @@ public class Redirecciones extends HttpServlet {
                 dentistas sin pacientes.
              */
             case "Eliminar dentistas sin pacientes":
-                dentistas = ddao.dentistaSinPaciente();
+                dentistas = dentistaDentistaDAO.dentistaSinPaciente();
                 if (dentistas.isEmpty()) {
                     request.setAttribute("mensaje", "No hay dentistas sin pacientes.");
                     url = "/jsp/advertencias.jsp";
@@ -83,13 +89,65 @@ public class Redirecciones extends HttpServlet {
                 redirigimos el flujo al formulario que los muestra
              */
             case "Listar los dentistas existentes":
-                dentistas = gdao.get(Dentista.class);
+                dentistas = dentistaGenericDAO.get(Dentista.class);
                 if (dentistas.isEmpty()) {
-                    request.setAttribute("mensaje", "No hay dentista.");
+                    request.setAttribute("mensaje", "No existen dentistas en la base de datos.");
                     url = "/jsp/advertencias.jsp";
                 } else {
                     request.setAttribute("dentistas", dentistas);
                     url = "/jsp/Administrador/listDentistas.jsp";
+                }
+                break;
+                /*
+                Obtenemos todos los pacientes y dentistas.
+                Luego vamos preguntando a cada paciente si es su dentista y asi
+                vamos creando una lista que posteriormente la la enviamos por peticion
+                si hay algun dentista añadido o redireccionamos a la pagina de advertencias
+                si no hay ningun dentista con paciente.
+                */
+            case "Listar los dentistas y pacientes asignados":
+                pacientes = pacienteGenericDAO.get(Paciente.class);
+                dentistas = dentistaGenericDAO.get(Dentista.class);
+
+                for (Dentista dent : dentistas) {
+                    for (Paciente paci : pacientes) {
+                        if (paci.getDentista() != null) {
+                            if (dent.getIdUsuario() == paci.getDentista().getIdUsuario()) {
+                                addPacientes.add(paci);
+                            }
+                        }
+                    }
+                    if (!addPacientes.isEmpty()) {
+                        Dentista nuevo = new Dentista();
+                        nuevo = dent;
+                        nuevo.setPacientes(addPacientes);
+                        dentistasYSusPacientes.add(nuevo);
+
+                    }
+                    addPacientes = new ArrayList();
+                }
+                if (dentistasYSusPacientes.isEmpty()) {
+                    request.setAttribute("mensaje", "No hay dentistas con pacientes asignados.");
+                    url = "/jsp/advertencias.jsp";
+                } else {
+
+                    request.setAttribute("dentistas", dentistasYSusPacientes);
+                    url = "/jsp/Administrador/listDentistasYSusPacientes.jsp";
+                }
+
+                break;
+            /*
+                Obtenemos una lista de nuestros pacientes sin dentista asignado
+                y los mostramos en una pagina jsp para elegir al que queramos borrar.
+             */
+            case "Eliminar paciente":
+                pacientes = pacientePacienteDAO.pacientesSinDentista();
+                if (pacientes.isEmpty()) {
+                    request.setAttribute("mensaje", "No hay pacientes sin asignar.");
+                    url = "/jsp/advertencias.jsp";
+                } else {
+                    request.setAttribute("pacientes", pacientes);
+                    url = "/jsp/Administrador/listEliminarPaciente.jsp";
                 }
                 break;
             /*
@@ -100,18 +158,32 @@ public class Redirecciones extends HttpServlet {
                 url = "/jsp/Tutor/createAlumno.jsp";
                 break;
             /*
-                Obtenemos una lista de nuestros pacientes y los mostramos en una 
-                pagina jsp para elegir al que queramos borrar.
+                Obtenemos una lista con los pacientes sin dentista. Comprobamos que haya
+                alguno y los mostramos en una vista.
              */
-            case "Eliminar paciente":
-                dentista = (Dentista) session.getAttribute("userConectado");
-                pacientes = pdao.obtenerPacientesDeUnDentista(dentista.getIdUsuario());
+            case "Asignar paciente":
+                pacientes = pacientePacienteDAO.pacientesSinDentistaNiDatos();
                 if (pacientes.isEmpty()) {
-                    request.setAttribute("mensaje", "No hay pacientes que eliminar.");
+                    request.setAttribute("mensaje", "No hay pacientes sin asignar.");
                     url = "/jsp/advertencias.jsp";
                 } else {
                     request.setAttribute("pacientes", pacientes);
-                    url = "/jsp/Tutor/eliminarPacientes.jsp";
+                    url = "/jsp/Dentista/listAsignarPaciente.jsp";
+                }
+                break;
+            /*
+                Obtenemos una lista con los pacientes del dentista en sesion. Comprobamos que haya
+                alguno y los mostramos en una vista.
+             */
+            case "Desasignar paciente":
+                dentista = (Dentista) session.getAttribute("userConectado");
+                pacientes = pacientePacienteDAO.obtenerPacientesDeUnDentista(dentista.getIdUsuario());
+                if (pacientes.isEmpty()) {
+                    request.setAttribute("mensaje", "No hay pacientes asignados.");
+                    url = "/jsp/advertencias.jsp";
+                } else {
+                    request.setAttribute("pacientes", pacientes);
+                    url = "/jsp/Dentista/listDesasignarPaciente.jsp";
                 }
                 break;
             /*
@@ -119,6 +191,38 @@ public class Redirecciones extends HttpServlet {
              */
             case "Cambiar datos":
                 url = "/jsp/Dentista/cambiarDatos.jsp";
+                break;
+            case "Asignar tratamiento":
+                dentista = (Dentista) session.getAttribute("userConectado");
+                pacientes = pacientePacienteDAO.obtenerPacientesDeUnDentista(dentista.getIdUsuario());
+                if (pacientes.isEmpty()) {
+                    request.setAttribute("mensaje", "No hay pacientes asignados.");
+                    url = "/jsp/advertencias.jsp";
+                } else {
+                    request.setAttribute("pacientes", pacientes);
+                    url = "/jsp/Dentista/listTratamientoPaciente.jsp";
+                }
+
+                break;
+            /*
+                Nos envia a la pagina donde se muestra nuestro historial
+             */
+            case "Ver historiales":
+                dentista = (Dentista) session.getAttribute("userConectado");
+                pacientes = pacientePacienteDAO.obtenerPacientesDeUnDentista(dentista.getIdUsuario());
+
+                for (Paciente p : pacientes) {
+                    historiales = historialHistorialDAO.historialDeUnPaciente(p.getIdUsuario());
+                    p.setHistoriales(historiales);
+                }
+
+                if (pacientes.isEmpty()) {
+                    request.setAttribute("mensaje", "No hay pacientes asignados.");
+                    url = "/jsp/advertencias.jsp";
+                } else {
+                    request.setAttribute("pacientes", pacientes);
+                    url = "/jsp/Dentista/listHistorialesPaciente.jsp";
+                }
                 break;
 
             /*
@@ -134,11 +238,11 @@ public class Redirecciones extends HttpServlet {
              */
             case "Ver tratamiento":
                 paciente = (Paciente) session.getAttribute("userConectado");
-                if (paciente.getTratamiento().isEmpty()) {
-                    request.setAttribute("mensaje", "No hay tratamiento asignados.");
+                if (paciente.getTratamiento() == null) {
+                    request.setAttribute("mensaje", "No hay tratamiento asignado.");
                     url = "/jsp/advertencias.jsp";
                 } else {
-                    request.setAttribute("tratamiento", paciente);
+                    request.setAttribute("paciente", paciente);
                     url = "/jsp/Paciente/verTratamiento.jsp";
                 }
 
@@ -148,15 +252,30 @@ public class Redirecciones extends HttpServlet {
              */
             case "Ver historial":
                 paciente = (Paciente) session.getAttribute("userConectado");
+                historiales = historialHistorialDAO.historialDeUnPaciente(paciente.getIdUsuario());
+                paciente.setHistoriales(historiales);
+
                 if (paciente.getHistoriales().isEmpty()) {
                     request.setAttribute("mensaje", "No hay historial.");
                     url = "/jsp/advertencias.jsp";
                 } else {
-                    request.setAttribute("historiales", paciente);
+                    request.setAttribute("paciente", paciente);
                     url = "/jsp/Paciente/verHistorial.jsp";
                 }
                 break;
+                /*
+                Redireccionamos a la pagina donde se mostraran las opciones
+                para pedir su cita.
+                */
+                case "Pedir cita":
+                if (paciente == null) {
+                    request.setAttribute("mensaje", "Ha ocurrido un error.");
+                    url = "/jsp/advertencias.jsp";
+                } else {
+                    url = "/jsp/Paciente/pedirCita.jsp";
+                }
 
+                break;
         }
 
         request.getRequestDispatcher(url).forward(request, response);
@@ -174,7 +293,10 @@ public class Redirecciones extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+         String url = "/index.jsp";
+        String acceso = "Introduce tus datos para acceder a la pagina." ;
+                 request.setAttribute("login", acceso);
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**
@@ -185,12 +307,11 @@ public class Redirecciones extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+@Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
     /**
      * Returns a short description of the servlet.
      *

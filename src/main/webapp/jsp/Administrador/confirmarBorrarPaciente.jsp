@@ -34,18 +34,18 @@
                 <tbody>
                     <tr>
                         <c:set var="salida" value="Datos vacios."/>
-                        <c:if test="${dentista.nombre != null}">
-                            <c:set var="salida" value="${dentista.apellidos}, ${dentista.nombre}"/>
+                        <c:if test="${paciente.nombre != null}">
+                            <c:set var="salida" value="${paciente.apellidos}, ${paciente.nombre}"/>
                         </c:if>
                         <th scope="col"><c:out value="${salida}" default="El paciente no tiene datos."/></th>
-                        <td scope="col"><c:out value="${dentista.email}" default="El paciente no tiene datos."/></td>
-                        <td scope="col"><c:out value="${dentista.dni}" default="Datos vacios."/></td>
+                        <td scope="col"><c:out value="${paciente.email}" default="El paciente no tiene datos."/></td>
+                        <td scope="col"><c:out value="${paciente.dni}" default="Datos vacios."/></td>
                     </tr>
                 </tbody>
             </table>
-            <input type="hidden" name="confirmar" value="${dentista.idUsuario}"/>
+            <input type="hidden" name="confirmar" value="${paciente.idUsuario}"/>
 
-            <input type="submit" class="btn btn-primary" name="enviar" value="Borrar dentista"/>
+            <input type="submit" class="btn btn-primary" name="enviar" value="Borrar paciente"/>
         </form>
     </div>
 

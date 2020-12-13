@@ -25,7 +25,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "citas")
-public class Cita implements Serializable {
+public class Cita implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,8 +74,5 @@ public class Cita implements Serializable {
     public void setTipoOperacion(Operacion tipoOperacion) {
         this.tipoOperacion = tipoOperacion;
     }
-    
-    
-    
     
 }

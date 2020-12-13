@@ -16,20 +16,34 @@
             </div>
         </form>
     </nav>
-    <div class="p-5">
-        <div class="d-flex justify-content-center">
-            <p id="mensaje" class="text-danger">${mensaje}</p>
-        </div>
-        <form class="form" role="form" method="post" action="Operaciones">
-            <div class="form-group">
-                <label>Email del nuevo dentista</label>
-                <input type="email" name="email" id="email" value="" placeholder="dentista@gmail.com" required/>  
-            </div>  
-            <div class="form-group">
-                <label>Contrase&ntilde;a del nuevo dentista</label>
-                <input type="password" name="password" value="" placerholder="123" required=""/>  
+    <form class="form" role="form" method="post" action="Operaciones">
+        <div class="row">
+            <div class="col-11 offset-1">
+                <h4>Introduce tus datos para crear tu cuenta.</h4>
+                </br>
             </div>
-            <input type="submit" id="enviar" class="btn btn-primary" name="enviar" value="Crear dentista"/>
+        </div>
+        <div class="row">
+
+            <div class="col-2 offset-2">
+                <label>Email</label>
+            </div>
+            <div class="col-8">
+                <input type="email" name="email" id="email" value="" placeholder="email@gmail.com" required/>  
+            </div>
+
+        </div>
+        <div class="row">
+
+            <div class="col-2 offset-2">
+                <label>Contrase&ntilde;a</label>
+            </div>
+            <div class="col-8">
+                <input type="password" name="password" value="" placerholder="Contrase&ntilde;a" required/>
+            </div>    
+        </div>
+        </br></br>
+        <input type="submit" id="enviar" class="btn btn-primary" name="enviar" value="Crear dentista"/>
         </form>
     </div>
 

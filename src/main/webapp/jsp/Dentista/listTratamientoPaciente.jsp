@@ -5,7 +5,7 @@
 <html lang="es">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Menu Administrador</title>
+        <title>Menu Dentista</title>
         <link rel="stylesheet" href="css/bootstrap.min.css"/>
     </head>
     <jsp:include page="/inc/cabecera"/>  
@@ -18,20 +18,19 @@
     </nav>
     <div class="p-5">
         <form class="form" role="form" method="post" action="Operaciones">
-            <label>Seleccione un dentista para borrarlo:</label>
-            <ol>
-                <c:forEach var="item" items="${dentistas}">
-                    <li>-  <input type="radio" name="dentista" value="${item.idUsuario}" checked/>
-                        <c:set var="salida" value="El paciente con correo '${item.email}' no tiene datos."/>
-                        <c:if test="${item.nombre != null}">
-                            <c:set var="salida" value="${item.apellidos}, ${item.nombre}"/>
-                        </c:if>
-                        <label><c:out value="${salida}" default="Ha ocurrido un error inesperado"/></label>
-                    </li>
+            <label>Seleccione un paciente:</label>
+            <select class="form-control" name="paciente">
+                <c:forEach var="item" items="${pacientes}">
+                    <option value="${item.idUsuario}">${item.apellidos}, ${item.nombre}</option>
                 </c:forEach>
-            </ol>
-
-            <input type="submit" class="btn btn-primary" name="enviar" value="Eliminar dentista"/>
+            </select>
+            </br>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Escriba el tratamiento para el paciente.</label>
+                <textarea class="form-control" name="tratamiento" rows="3" maxlength="149"></textarea>
+            </div>
+            </br>
+            <input type="submit" class="btn btn-primary" name="enviar" value="Asignar tratamiento"/>
         </form>
     </div>
 

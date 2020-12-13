@@ -2,8 +2,10 @@ package es.albarregas.daofactory;
 
 import es.albarregas.dao.DentistaDAO;
 import es.albarregas.dao.GenericoDAO;
+import es.albarregas.dao.HistorialDAO;
 import es.albarregas.dao.IDentistaDAO;
 import es.albarregas.dao.IGenericoDAO;
+import es.albarregas.dao.IHistorialDAO;
 import es.albarregas.dao.IPacienteDAO;
 import es.albarregas.dao.IUsuarioDAO;
 import es.albarregas.dao.PacienteDAO;
@@ -29,6 +31,11 @@ public class MySQLDAOFactory extends DAOFactory {
     @Override
     public IDentistaDAO getDentistaDAO() {
         return new DentistaDAO();
+    }
+
+    @Override
+    public IHistorialDAO getHistorialDAO() {
+        return new HistorialDAO();
     }
 
 }
